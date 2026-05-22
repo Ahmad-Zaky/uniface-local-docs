@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Uniface 10.4 — Local Docs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Serif:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/vendor/lunr.min.js"></script>
+<script src="assets/vendor/lunr.stemmer.support.min.js"></script>
+<script src="assets/vendor/lunr.de.min.js"></script>
+<script src="assets/vendor/lunr.multi.min.js"></script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="brand">
+    <span class="brand-mark">U</span>
+    <div>
+      <div class="brand-title">Uniface 10.4</div>
+      <div class="brand-sub">Local documentation</div>
+    </div>
+  </div>
+  <div class="search-shell">
+    <kbd class="kbd-hint">/</kbd>
+    <input id="search" type="search" placeholder="Search the docs — try &ldquo;ProcScript&rdquo;, &ldquo;$syntax&rdquo;, or &ldquo;Resilience4j&rdquo;" autocomplete="off" spellcheck="false">
+    <span class="search-stats" id="search-stats"></span>
+  </div>
+  <div class="topbar-meta">
+    <span id="indexing-status" class="status-pill">building index…</span>
+  </div>
+</header>
+
+<main class="layout">
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-head">
+      <span class="sidebar-title">Contents</span>
+      <button id="collapse-all" class="ghost-btn" title="Collapse all">⌃</button>
+    </div>
+    <nav id="toc" class="toc"></nav>
+  </aside>
+
+  <section class="content-wrap">
+    <div id="results" class="results" hidden></div>
+    <article id="content" class="content">
+      <div class="welcome">
+        <div class="welcome-eyebrow">offline mirror</div>
+        <h1>Uniface 10.4 — your own search</h1>
+        <p>This is a local copy of the Rocket Uniface 10.4 documentation, indexed for fast full-text search. Use the sidebar to browse, or press <kbd>/</kbd> to focus search.</p>
+        <div class="shortcut-grid">
+          <div class="shortcut"><kbd>/</kbd><span>focus search</span></div>
+          <div class="shortcut"><kbd>Esc</kbd><span>clear search</span></div>
+          <div class="shortcut"><kbd>↑</kbd><kbd>↓</kbd><span>navigate results</span></div>
+          <div class="shortcut"><kbd>↵</kbd><span>open result</span></div>
+        </div>
+        <p class="welcome-foot">Pages: <span id="page-count">…</span> · Source: docs.rocketsoftware.com</p>
+      </div>
+    </article>
+  </section>
+
+</main>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
