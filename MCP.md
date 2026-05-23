@@ -156,8 +156,8 @@ pip install mcp python-dotenv         # always required
 # Install ONE (or more) provider SDKs:
 pip install groq                      # Groq  (free)
 pip install anthropic                 # Claude
-pip install google-generativeai       # Gemini (free)
-pip install openai                    # OpenAI or any OpenAI-compatible endpoint
+pip install google-genai              # Gemini (free)
+pip install openai                    # OpenAI, GitHub Models, or any OpenAI-compatible endpoint
 ```
 
 Verify:
@@ -177,6 +177,7 @@ The client auto-detects which provider to use based on which key is set.
 |---|---|---|---|
 | **Groq** (recommended) | https://console.groq.com → API Keys | `GROQ_API_KEY` | Yes |
 | **Gemini** | https://aistudio.google.com/app/apikey | `GEMINI_API_KEY` | Yes |
+| **GitHub Models** | https://github.com/settings/personal-access-tokens | `GITHUB_PAT` | Yes (free tier) |
 | **Claude** | https://console.anthropic.com | `ANTHROPIC_API_KEY` | No (cheap) |
 | **OpenAI** | https://platform.openai.com/api-keys | `OPENAI_API_KEY` | No |
 
@@ -191,8 +192,12 @@ cp .env.example .env
 Then open `.env` and set your key (leaving the others commented out):
 
 ```bash
-# .env
+# .env — pick ONE
 GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxx
+
+# or GitHub Models (free, no credit card):
+# GITHUB_PAT=github_pat_xxxxxxxxxxxxxxxxxxxx
+# GITHUB_MODEL=gpt-5          # optional — default is gpt-4o
 ```
 
 The client loads `.env` automatically on startup. The file is listed in
@@ -209,7 +214,11 @@ export GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxx
 > **Groq free tier**: ~14,400 requests/day, 500K tokens/minute on
 > `llama-3.3-70b-versatile`. More than enough for documentation queries.
 >
-> **Gemini free tier**: 1,500 requests/day on `gemini-1.5-flash`.
+> **Gemini free tier**: 1,500 requests/day on `gemini-2.0-flash`.
+>
+> **GitHub Models free tier**: Rate limits vary by model. Check the model's
+> details page at https://github.com/marketplace/models. Uses your existing
+> GitHub account; no separate sign-up or credit card required.
 
 ---
 
@@ -229,6 +238,7 @@ python mcp_client/client.py --provider groq    # explicit
 python mcp_client/client.py --provider claude
 python mcp_client/client.py --provider gemini
 python mcp_client/client.py --provider openai
+python mcp_client/client.py --provider github  # GitHub Models (gpt-4o / gpt-5)
 ```
 
 ```
@@ -435,6 +445,16 @@ If you have a `.env` file but the error persists, make sure `python-dotenv`
 is installed (`pip install python-dotenv`) and that the key is not commented
 out in the file.
 
+### `ERROR: GITHUB_PAT is not set`
+
+Create a Personal Access Token at https://github.com/settings/personal-access-tokens
+(no special scopes required — a basic token works). Then:
+
+```bash
+# .env
+GITHUB_PAT=github_pat_xxxxxxxxxxxxxxxxxxxx
+```
+
 ### `Page '...' not found` from `get_page`
 
 The `site/assets/pages/` directory is missing or incomplete.
@@ -478,12 +498,15 @@ to the lighter model via an env var:
 # Groq — switch to the faster small model
 export GROQ_MODEL=llama-3.1-8b-instant
 
-# Gemini — already using the fastest free model (gemini-1.5-flash)
+# Gemini — already using the default model (gemini-2.0-flash)
 # Claude — switch to Haiku (cheapest)
 export CLAUDE_MODEL=claude-haiku-4-5-20251001
 
 # OpenAI — switch to a cheaper model
 export OPENAI_MODEL=gpt-4o-mini
+
+# GitHub Models — switch to a lighter model
+export GITHUB_MODEL=gpt-4o-mini
 ```
 
 ### Using an OpenAI-compatible endpoint (Ollama, Together, etc.)
@@ -498,7 +521,7 @@ python mcp_client/client.py --provider openai
 ### Auto-detect picked the wrong provider
 
 If you have multiple keys set, the client picks the first one found
-(Groq → Claude → Gemini → OpenAI). Override with `--provider`.
+(Groq → Claude → Gemini → OpenAI → GitHub). Override with `--provider`.
 
 ---
 

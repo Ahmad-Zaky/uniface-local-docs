@@ -14,6 +14,7 @@ gemini         pip install             GEMINI_API_KEY           yes
 openai         pip install openai      OPENAI_API_KEY           no
 <any openai-   pip install openai      OPENAI_API_KEY +         varies
  compatible>                           OPENAI_BASE_URL
+github         pip install openai      GITHUB_PAT               yes (free tier)
 
 Usage:
   python client.py                              # interactive, auto-detect provider
@@ -21,6 +22,7 @@ Usage:
   python client.py --provider claude --demo     # demo mode with Claude
   python client.py --provider gemini --prompt "What is trigger clear?"
   python client.py --provider openai            # or any OpenAI-compatible endpoint
+  python client.py --provider github            # GitHub Models (gpt-4o, gpt-5, etc.)
 """
 
 from __future__ import annotations
@@ -301,15 +303,17 @@ class ClaudeBackend(LLMBackend):
 # Free tier at https://aistudio.google.com
 
 class GeminiBackend(LLMBackend):
-    DEFAULT_MODEL = "gemini-1.5-flash"
+    DEFAULT_MODEL = "gemini-2.0-flash"
 
     def __init__(self, api_key: str, model: str = DEFAULT_MODEL):
         try:
-            import google.generativeai as genai
+            from google import genai
+            from google.genai import types as genai_types
             self._genai = genai
+            self._types = genai_types
         except ImportError:
-            raise RuntimeError("Run: pip install google-generativeai")
-        genai.configure(api_key=api_key)
+            raise RuntimeError("Run: pip install google-genai")
+        self._client = genai.Client(api_key=api_key)
         self._model_name = model
 
     @classmethod
@@ -327,32 +331,32 @@ class GeminiBackend(LLMBackend):
         return f"Google Gemini / {self._model_name}"
 
     def _build_gemini_tools(self, tools: list[MCPTool]):
-        protos = self._genai.protos
+        types = self._types
         type_map = {
-            "string": protos.Type.STRING,
-            "integer": protos.Type.INTEGER,
-            "number": protos.Type.NUMBER,
-            "boolean": protos.Type.BOOLEAN,
-            "object": protos.Type.OBJECT,
-            "array": protos.Type.ARRAY,
+            "string": types.Type.STRING,
+            "integer": types.Type.INTEGER,
+            "number": types.Type.NUMBER,
+            "boolean": types.Type.BOOLEAN,
+            "object": types.Type.OBJECT,
+            "array": types.Type.ARRAY,
         }
 
-        def schema(js: dict) -> "protos.Schema":
+        def schema(js: dict) -> "types.Schema":
             props = {
-                k: protos.Schema(
-                    type_=type_map.get(v.get("type", "string"), protos.Type.STRING),
+                k: types.Schema(
+                    type=type_map.get(v.get("type", "string"), types.Type.STRING),
                     description=v.get("description", ""),
                 )
                 for k, v in js.get("properties", {}).items()
             }
-            return protos.Schema(
-                type_=protos.Type.OBJECT,
+            return types.Schema(
+                type=types.Type.OBJECT,
                 properties=props,
                 required=js.get("required", []),
             )
 
-        return protos.Tool(function_declarations=[
-            protos.FunctionDeclaration(
+        return types.Tool(function_declarations=[
+            types.FunctionDeclaration(
                 name=t.name,
                 description=t.description,
                 parameters=schema(t.input_schema),
@@ -360,38 +364,44 @@ class GeminiBackend(LLMBackend):
             for t in tools
         ])
 
-    def _to_gemini_contents(self, history: list[Message]) -> list[dict]:
+    def _to_gemini_contents(self, history: list[Message]):
+        types = self._types
         contents = []
         for m in history:
             if m.role == "user":
-                contents.append({"role": "user", "parts": [{"text": m.text}]})
+                contents.append(types.Content(role="user", parts=[types.Part(text=m.text)]))
             elif m.role == "assistant":
                 parts = []
                 if m.text:
-                    parts.append({"text": m.text})
+                    parts.append(types.Part(text=m.text))
                 for tc in m.tool_calls:
-                    parts.append({"function_call": {"name": tc.name, "args": tc.arguments}})
-                contents.append({"role": "model", "parts": parts})
+                    parts.append(types.Part(
+                        function_call=types.FunctionCall(name=tc.name, args=tc.arguments or {})
+                    ))
+                contents.append(types.Content(role="model", parts=parts))
             elif m.role == "tool":
-                contents.append({
-                    "role": "user",
-                    "parts": [{
-                        "function_response": {
-                            "name": m.tool_name,
-                            "response": {"result": m.tool_result},
-                        }
-                    }],
-                })
+                contents.append(types.Content(
+                    role="user",
+                    parts=[types.Part(
+                        function_response=types.FunctionResponse(
+                            name=m.tool_name,
+                            response={"result": m.tool_result},
+                        )
+                    )],
+                ))
         return contents
 
     def complete(self, system, history, tools):
-        model = self._genai.GenerativeModel(
-            self._model_name,
-            system_instruction=system,
-            tools=[self._build_gemini_tools(tools)],
-        )
+        types = self._types
         contents = self._to_gemini_contents(history)
-        resp = model.generate_content(contents)
+        resp = self._client.models.generate_content(
+            model=self._model_name,
+            contents=contents,
+            config=types.GenerateContentConfig(
+                system_instruction=system,
+                tools=[self._build_gemini_tools(tools)],
+            ),
+        )
 
         text, calls = None, []
         for part in resp.candidates[0].content.parts:
@@ -480,6 +490,32 @@ class OpenAIBackend(LLMBackend):
         return msg.content, []
 
 
+# ── GitHub Models backend ───────────────────────────────────────────────
+# Free tier via GitHub PAT — https://github.com/marketplace/models
+# OpenAI-compatible endpoint hosted on Azure.
+
+class GitHubBackend(OpenAIBackend):
+    DEFAULT_MODEL = "gpt-4o"
+    _BASE_URL = "https://models.inference.ai.azure.com"
+
+    def __init__(self, pat: str, model: str = DEFAULT_MODEL):
+        super().__init__(api_key=pat, model=model, base_url=self._BASE_URL)
+
+    @classmethod
+    def from_env(cls) -> "GitHubBackend":
+        pat = os.environ.get("GITHUB_PAT")
+        if not pat:
+            raise RuntimeError(
+                "GITHUB_PAT is not set.\n"
+                "Create a token at https://github.com/settings/personal-access-tokens"
+            )
+        return cls(pat, os.environ.get("GITHUB_MODEL", cls.DEFAULT_MODEL))
+
+    @property
+    def label(self) -> str:
+        return f"GitHub Models / {self._model}"
+
+
 # ── Shared helper ───────────────────────────────────────────────────────
 
 def _to_openai_tools(tools: list[MCPTool]) -> list[dict]:
@@ -503,6 +539,7 @@ BACKENDS: dict[str, type[LLMBackend]] = {
     "claude": ClaudeBackend,
     "gemini": GeminiBackend,
     "openai": OpenAIBackend,
+    "github": GitHubBackend,
 }
 
 _ENV_KEYS = {
@@ -510,6 +547,7 @@ _ENV_KEYS = {
     "claude": "ANTHROPIC_API_KEY",
     "gemini": "GEMINI_API_KEY",
     "openai": "OPENAI_API_KEY",
+    "github": "GITHUB_PAT",
 }
 
 
@@ -560,7 +598,7 @@ async def run_agent(
         history.append(Message(role="assistant", text=text, tool_calls=tool_calls))
 
         for tc in tool_calls:
-            arg_str = ", ".join(f"{k}={v!r}" for k, v in tc.arguments.items())
+            arg_str = ", ".join(f"{k}={v!r}" for k, v in (tc.arguments or {}).items())
             print(f"\n  ⚙  {tc.name}({arg_str})")
 
             result = await session.call_tool(tc.name, tc.arguments)
@@ -597,6 +635,11 @@ async def interactive(backend: LLMBackend, session: ClientSession) -> None:
             for i, p in enumerate(EXAMPLE_PROMPTS, 1):
                 print(f"  {i:2d}. {p}")
             continue
+        if prompt.isdigit():
+            n = int(prompt)
+            if 1 <= n <= len(EXAMPLE_PROMPTS):
+                prompt = EXAMPLE_PROMPTS[n - 1]
+                print(f"  → {prompt}")
         await run_agent(backend, session, prompt)
 
 
