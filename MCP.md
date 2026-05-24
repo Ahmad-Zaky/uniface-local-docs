@@ -318,39 +318,84 @@ Source: https://docs.rocketsoftware.com/de-DE/bundle/uniface_104/page/aag1665703
 
 ---
 
-## 8. Step 5 — Wire into Claude Code (optional)
+## 8. Step 5 — Wire into an AI coding assistant (optional)
 
-You can add the MCP server to **Claude Code** or **Claude Desktop** so
-that Claude can query your Uniface docs during any conversation — no
-client script needed.
+You can add the MCP server to **Claude Code** or **OpenCode** so that the
+assistant can query your Uniface docs during any conversation — no client
+script needed.
+
+---
 
 ### Claude Code (VS Code / CLI)
 
-Add to `~/.claude/claude_desktop_config.json` (create it if absent):
+Run the following command, replacing the path with the real location of
+this project on your machine:
 
-```json
-{
-  "mcpServers": {
-    "uniface-docs": {
-      "command": "/absolute/path/to/uniface-docs/.venv/bin/python",
-      "args": ["/absolute/path/to/uniface-docs/mcp_server/server.py"]
-    }
-  }
-}
+```bash
+claude mcp add -s user uniface-docs \
+  /absolute/path/to/uniface-docs/.venv/bin/python \
+  /absolute/path/to/uniface-docs/mcp_server/server.py
 ```
 
-Replace `/absolute/path/to/uniface-docs` with the real path on your
-machine (e.g. `/home/ahmed/Downloads/uniface-docs`).
+**Sample — if the project lives at `/home/user/uniface-docs`:**
 
-Then restart Claude Code. You should see `uniface-docs` appear in the
-MCP servers list. Claude can now call all 6 tools during any session.
+```bash
+claude mcp add -s user uniface-docs \
+  /home/user/uniface-docs/.venv/bin/python \
+  /home/user/uniface-docs/mcp_server/server.py
+```
 
-### Verify the server registers correctly
+The `-s user` flag registers the server at user scope so it is available
+in all your projects. Claude Code saves the entry to `~/.claude.json` in
+your home directory — you do not need to edit that file manually.
+
+Verify the server registered and connected:
+
+```bash
+claude mcp list
+# Expected output:
+# uniface-docs: /path/to/.venv/bin/python ... - ✓ Connected
+```
+
+---
+
+### OpenCode
+
+Run the interactive wizard:
+
+```bash
+opencode mcp add
+```
+
+Follow the prompts:
+
+| Prompt | What to enter |
+|---|---|
+| **Location** | Select **Global** (makes the server available in all projects) |
+| **Enter MCP server name** | `uniface-docs` |
+| **Type** | Select **local** (stdio-based server) |
+| **Command** | `/absolute/path/to/uniface-docs/.venv/bin/python /absolute/path/to/uniface-docs/mcp_server/server.py` |
+
+OpenCode saves the entry to `~/.config/opencode/opencode.jsonc` — you do
+not need to edit that file manually.
+
+Verify the server connected:
+
+```bash
+opencode mcp list
+# Expected output:
+# ● ✓ uniface-docs  connected
+#       /path/to/.venv/bin/python /path/to/mcp_server/server.py
+```
+
+---
+
+### Verify the server starts correctly (both tools)
 
 ```bash
 # From the project root — should print tool names and exit cleanly
 source .venv/bin/activate
-python mcp_server/server.py --help 2>/dev/null || echo "server loaded OK"
+python3 mcp_server/server.py --help 2>/dev/null || echo "server loaded OK"
 ```
 
 ---
