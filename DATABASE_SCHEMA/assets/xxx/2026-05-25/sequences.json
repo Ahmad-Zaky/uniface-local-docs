@@ -1,0 +1,22 @@
+[
+  {
+    "name": "HIBERNATE_SEQUENCE",
+    "increment": 1,
+    "start_with": 1
+  },
+  {
+    "name": "MY_SEQ",
+    "increment": 1,
+    "start_with": 1
+  },
+  {
+    "name": "PARTS_PK",
+    "increment": 1,
+    "start_with": 1
+  },
+  {
+    "name": "SEQ_AUDIT_LOG",
+    "increment": 1,
+    "start_with": 1
+  }
+]

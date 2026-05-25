@@ -1,0 +1,3 @@
+# Dependencies for mssql_runner.py
+# Install with: pip install -r requirements.txt
+pymssql==2.3.13

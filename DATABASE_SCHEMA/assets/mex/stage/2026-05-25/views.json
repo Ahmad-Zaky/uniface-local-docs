@@ -1,0 +1,1210 @@
+{
+  "AANWVIEW": {
+    "name": "AANWVIEW",
+    "columns": []
+  },
+  "ABOAVIEW": {
+    "name": "ABOAVIEW",
+    "columns": []
+  },
+  "ABOKVIEW": {
+    "name": "ABOKVIEW",
+    "columns": []
+  },
+  "ABOVERSH": {
+    "name": "ABOVERSH",
+    "columns": []
+  },
+  "ABSATZVIEW": {
+    "name": "ABSATZVIEW",
+    "columns": []
+  },
+  "ABSLVIEW": {
+    "name": "ABSLVIEW",
+    "columns": []
+  },
+  "ABSVIEW": {
+    "name": "ABSVIEW",
+    "columns": []
+  },
+  "ABWAVIEW": {
+    "name": "ABWAVIEW",
+    "columns": []
+  },
+  "ADRPBVIE": {
+    "name": "ADRPBVIE",
+    "columns": []
+  },
+  "ADRPKVIE": {
+    "name": "ADRPKVIE",
+    "columns": []
+  },
+  "ADRPVIEW": {
+    "name": "ADRPVIEW",
+    "columns": []
+  },
+  "AELVIEW": {
+    "name": "AELVIEW",
+    "columns": []
+  },
+  "AFILLVIEW": {
+    "name": "AFILLVIEW",
+    "columns": []
+  },
+  "ANCUVIEW": {
+    "name": "ANCUVIEW",
+    "columns": []
+  },
+  "ANCVIEW": {
+    "name": "ANCVIEW",
+    "columns": []
+  },
+  "ANPRVIEW": {
+    "name": "ANPRVIEW",
+    "columns": []
+  },
+  "ANVVIEW": {
+    "name": "ANVVIEW",
+    "columns": []
+  },
+  "ANZOVIEW": {
+    "name": "ANZOVIEW",
+    "columns": []
+  },
+  "ATRVIEW": {
+    "name": "ATRVIEW",
+    "columns": []
+  },
+  "AUFTVIEW": {
+    "name": "AUFTVIEW",
+    "columns": []
+  },
+  "AWAAVIEW": {
+    "name": "AWAAVIEW",
+    "columns": []
+  },
+  "BENMANVI": {
+    "name": "BENMANVI",
+    "columns": []
+  },
+  "BERITBVI": {
+    "name": "BERITBVI",
+    "columns": []
+  },
+  "BONVIEW": {
+    "name": "BONVIEW",
+    "columns": []
+  },
+  "BQNVIEW": {
+    "name": "BQNVIEW",
+    "columns": []
+  },
+  "BRIEVIEW": {
+    "name": "BRIEVIEW",
+    "columns": []
+  },
+  "BROBVIEW": {
+    "name": "BROBVIEW",
+    "columns": []
+  },
+  "BSUMVIEW": {
+    "name": "BSUMVIEW",
+    "columns": []
+  },
+  "BUAAVIEW": {
+    "name": "BUAAVIEW",
+    "columns": []
+  },
+  "BUABOVIE": {
+    "name": "BUABOVIE",
+    "columns": []
+  },
+  "BUABSVI1": {
+    "name": "BUABSVI1",
+    "columns": []
+  },
+  "BUABSVIE": {
+    "name": "BUABSVIE",
+    "columns": []
+  },
+  "BUAKVIEW": {
+    "name": "BUAKVIEW",
+    "columns": []
+  },
+  "BUAOVIEW": {
+    "name": "BUAOVIEW",
+    "columns": []
+  },
+  "BUARVIEW": {
+    "name": "BUARVIEW",
+    "columns": []
+  },
+  "BUAUSLAG": {
+    "name": "BUAUSLAG",
+    "columns": []
+  },
+  "BUAUTVIE": {
+    "name": "BUAUTVIE",
+    "columns": []
+  },
+  "BUAUVIEW": {
+    "name": "BUAUVIEW",
+    "columns": []
+  },
+  "BUBEARVI": {
+    "name": "BUBEARVI",
+    "columns": []
+  },
+  "BUBERTIV": {
+    "name": "BUBERTIV",
+    "columns": []
+  },
+  "BUBETIVI": {
+    "name": "BUBETIVI",
+    "columns": []
+  },
+  "BUBEWVIE": {
+    "name": "BUBEWVIE",
+    "columns": []
+  },
+  "BUBSIVIE": {
+    "name": "BUBSIVIE",
+    "columns": []
+  },
+  "BUBUDVIE": {
+    "name": "BUBUDVIE",
+    "columns": []
+  },
+  "BUDRUVIE": {
+    "name": "BUDRUVIE",
+    "columns": []
+  },
+  "BUEINKVI": {
+    "name": "BUEINKVI",
+    "columns": []
+  },
+  "BUEKVIEW": {
+    "name": "BUEKVIEW",
+    "columns": []
+  },
+  "BUFAKLSV": {
+    "name": "BUFAKLSV",
+    "columns": []
+  },
+  "BUFAKSEV": {
+    "name": "BUFAKSEV",
+    "columns": []
+  },
+  "BUFAKVIE": {
+    "name": "BUFAKVIE",
+    "columns": []
+  },
+  "BUFASTVI": {
+    "name": "BUFASTVI",
+    "columns": []
+  },
+  "BUFOVIEW": {
+    "name": "BUFOVIEW",
+    "columns": []
+  },
+  "BUFREIVI": {
+    "name": "BUFREIVI",
+    "columns": []
+  },
+  "BUFREXVI": {
+    "name": "BUFREXVI",
+    "columns": []
+  },
+  "BUGSIVIE": {
+    "name": "BUGSIVIE",
+    "columns": []
+  },
+  "BUGWVIEW": {
+    "name": "BUGWVIEW",
+    "columns": []
+  },
+  "BUINVIEW": {
+    "name": "BUINVIEW",
+    "columns": []
+  },
+  "BUISTATV": {
+    "name": "BUISTATV",
+    "columns": []
+  },
+  "BUKAVIEW": {
+    "name": "BUKAVIEW",
+    "columns": []
+  },
+  "BUKOSVIE": {
+    "name": "BUKOSVIE",
+    "columns": []
+  },
+  "BUKOVIEW": {
+    "name": "BUKOVIEW",
+    "columns": []
+  },
+  "BUKTRVIE": {
+    "name": "BUKTRVIE",
+    "columns": []
+  },
+  "BULAAUFL": {
+    "name": "BULAAUFL",
+    "columns": []
+  },
+  "BULAGAUF": {
+    "name": "BULAGAUF",
+    "columns": []
+  },
+  "BULAVIEW": {
+    "name": "BULAVIEW",
+    "columns": []
+  },
+  "BULFVIEW": {
+    "name": "BULFVIEW",
+    "columns": []
+  },
+  "BULIEFERSUMVIEW": {
+    "name": "BULIEFERSUMVIEW",
+    "columns": []
+  },
+  "BULIVEVW": {
+    "name": "BULIVEVW",
+    "columns": []
+  },
+  "BULIVIEW": {
+    "name": "BULIVIEW",
+    "columns": []
+  },
+  "BULIZVIE": {
+    "name": "BULIZVIE",
+    "columns": []
+  },
+  "BULRVIEW": {
+    "name": "BULRVIEW",
+    "columns": []
+  },
+  "BUMRAVIE": {
+    "name": "BUMRAVIE",
+    "columns": []
+  },
+  "BUOBVIEW": {
+    "name": "BUOBVIEW",
+    "columns": []
+  },
+  "BUOPTVIE": {
+    "name": "BUOPTVIE",
+    "columns": []
+  },
+  "BUORVIEW": {
+    "name": "BUORVIEW",
+    "columns": []
+  },
+  "BUPARVIE": {
+    "name": "BUPARVIE",
+    "columns": []
+  },
+  "BUPKVIEW": {
+    "name": "BUPKVIEW",
+    "columns": []
+  },
+  "BUPOVIEW": {
+    "name": "BUPOVIEW",
+    "columns": []
+  },
+  "BUPRHIVI": {
+    "name": "BUPRHIVI",
+    "columns": []
+  },
+  "BUPROVIE": {
+    "name": "BUPROVIE",
+    "columns": []
+  },
+  "BUQAGVIE": {
+    "name": "BUQAGVIE",
+    "columns": []
+  },
+  "BUQMVIEW": {
+    "name": "BUQMVIEW",
+    "columns": []
+  },
+  "BUQPVIEW": {
+    "name": "BUQPVIEW",
+    "columns": []
+  },
+  "BUQRAVIE": {
+    "name": "BUQRAVIE",
+    "columns": []
+  },
+  "BUQRVIEW": {
+    "name": "BUQRVIEW",
+    "columns": []
+  },
+  "BUREMVIE": {
+    "name": "BUREMVIE",
+    "columns": []
+  },
+  "BURESUCH": {
+    "name": "BURESUCH",
+    "columns": []
+  },
+  "BUREVIEW": {
+    "name": "BUREVIEW",
+    "columns": []
+  },
+  "BUREZVIE": {
+    "name": "BUREZVIE",
+    "columns": []
+  },
+  "BURFVIEW": {
+    "name": "BURFVIEW",
+    "columns": []
+  },
+  "BURGVIEW": {
+    "name": "BURGVIEW",
+    "columns": []
+  },
+  "BURTVIEW": {
+    "name": "BURTVIEW",
+    "columns": []
+  },
+  "BUSGVIEW": {
+    "name": "BUSGVIEW",
+    "columns": []
+  },
+  "BUSOVIEW": {
+    "name": "BUSOVIEW",
+    "columns": []
+  },
+  "BUSTVIEW": {
+    "name": "BUSTVIEW",
+    "columns": []
+  },
+  "BUSWVIEW": {
+    "name": "BUSWVIEW",
+    "columns": []
+  },
+  "BUTERVIE": {
+    "name": "BUTERVIE",
+    "columns": []
+  },
+  "BUTEXVIE": {
+    "name": "BUTEXVIE",
+    "columns": []
+  },
+  "BUTIHIVI": {
+    "name": "BUTIHIVI",
+    "columns": []
+  },
+  "BUTIVIEW": {
+    "name": "BUTIVIEW",
+    "columns": []
+  },
+  "BUTTVIEW": {
+    "name": "BUTTVIEW",
+    "columns": []
+  },
+  "BUUMPRVI": {
+    "name": "BUUMPRVI",
+    "columns": []
+  },
+  "BUUMSAKT": {
+    "name": "BUUMSAKT",
+    "columns": []
+  },
+  "BUUMSAKTHILF": {
+    "name": "BUUMSAKTHILF",
+    "columns": []
+  },
+  "BUUMSBSW": {
+    "name": "BUUMSBSW",
+    "columns": []
+  },
+  "BUUMSKND": {
+    "name": "BUUMSKND",
+    "columns": []
+  },
+  "BUUMSSEL": {
+    "name": "BUUMSSEL",
+    "columns": []
+  },
+  "BUUMSTIT": {
+    "name": "BUUMSTIT",
+    "columns": []
+  },
+  "BUVGLVIE": {
+    "name": "BUVGLVIE",
+    "columns": []
+  },
+  "BUVLVIEW": {
+    "name": "BUVLVIEW",
+    "columns": []
+  },
+  "BUVMVIEW": {
+    "name": "BUVMVIEW",
+    "columns": []
+  },
+  "BUVWVIEW": {
+    "name": "BUVWVIEW",
+    "columns": []
+  },
+  "BUWAVIEW": {
+    "name": "BUWAVIEW",
+    "columns": []
+  },
+  "BUZUAVIE": {
+    "name": "BUZUAVIE",
+    "columns": []
+  },
+  "C2WARTVI": {
+    "name": "C2WARTVI",
+    "columns": []
+  },
+  "C2WMVIEW": {
+    "name": "C2WMVIEW",
+    "columns": []
+  },
+  "C4APVIEW": {
+    "name": "C4APVIEW",
+    "columns": []
+  },
+  "CMAPVIEW": {
+    "name": "CMAPVIEW",
+    "columns": []
+  },
+  "CMOBJVIE": {
+    "name": "CMOBJVIE",
+    "columns": []
+  },
+  "CMPOVIEW": {
+    "name": "CMPOVIEW",
+    "columns": []
+  },
+  "CO_SB_B2B": {
+    "name": "CO_SB_B2B",
+    "columns": []
+  },
+  "COVSYNVI": {
+    "name": "COVSYNVI",
+    "columns": []
+  },
+  "CRM_SELIMPORTV": {
+    "name": "CRM_SELIMPORTV",
+    "columns": []
+  },
+  "DOKBVIEW": {
+    "name": "DOKBVIEW",
+    "columns": []
+  },
+  "DPLAVIEW": {
+    "name": "DPLAVIEW",
+    "columns": []
+  },
+  "DWC_V_ABO_EINZELHEFT": {
+    "name": "DWC_V_ABO_EINZELHEFT",
+    "columns": []
+  },
+  "DWC_V_ABO_IVWSTATH": {
+    "name": "DWC_V_ABO_IVWSTATH",
+    "columns": []
+  },
+  "DWC_V_ABO_KALENDER": {
+    "name": "DWC_V_ABO_KALENDER",
+    "columns": []
+  },
+  "DWC_V_ABO_MOBPLIST": {
+    "name": "DWC_V_ABO_MOBPLIST",
+    "columns": []
+  },
+  "DWC_V_ABO_PRAEMIENARTIKEL": {
+    "name": "DWC_V_ABO_PRAEMIENARTIKEL",
+    "columns": []
+  },
+  "DWC_V_ABO_PREISKAT": {
+    "name": "DWC_V_ABO_PREISKAT",
+    "columns": []
+  },
+  "DWC_V_ABO_RECHNUNG": {
+    "name": "DWC_V_ABO_RECHNUNG",
+    "columns": []
+  },
+  "DWC_V_ABO_STAMM_H": {
+    "name": "DWC_V_ABO_STAMM_H",
+    "columns": []
+  },
+  "DWC_V_ABO_STAMM_Z": {
+    "name": "DWC_V_ABO_STAMM_Z",
+    "columns": []
+  },
+  "DWC_V_ANZ_ADVERT_UMSANTEIL": {
+    "name": "DWC_V_ANZ_ADVERT_UMSANTEIL",
+    "columns": []
+  },
+  "DWC_V_ANZ_AUFTVERT_AE": {
+    "name": "DWC_V_ANZ_AUFTVERT_AE",
+    "columns": []
+  },
+  "DWC_V_ANZ_BEZIRKSSPLIT": {
+    "name": "DWC_V_ANZ_BEZIRKSSPLIT",
+    "columns": []
+  },
+  "DWC_V_ANZ_DISPPLAZ_AE": {
+    "name": "DWC_V_ANZ_DISPPLAZ_AE",
+    "columns": []
+  },
+  "DWC_V_ANZ_DRUBRIK_AE": {
+    "name": "DWC_V_ANZ_DRUBRIK_AE",
+    "columns": []
+  },
+  "DWC_V_ANZ_DSOKOST": {
+    "name": "DWC_V_ANZ_DSOKOST",
+    "columns": []
+  },
+  "DWC_V_ANZ_EASTATFC": {
+    "name": "DWC_V_ANZ_EASTATFC",
+    "columns": []
+  },
+  "DWC_V_ANZ_EOBJSTRUKR": {
+    "name": "DWC_V_ANZ_EOBJSTRUKR",
+    "columns": []
+  },
+  "DWC_V_ANZ_EOBSTEAUFT": {
+    "name": "DWC_V_ANZ_EOBSTEAUFT",
+    "columns": []
+  },
+  "DWC_V_ANZ_EOBSTEAUFT_OBJEKT": {
+    "name": "DWC_V_ANZ_EOBSTEAUFT_OBJEKT",
+    "columns": []
+  },
+  "DWC_V_ANZ_KADISPO": {
+    "name": "DWC_V_ANZ_KADISPO",
+    "columns": []
+  },
+  "DWC_V_ANZ_KALENDEA": {
+    "name": "DWC_V_ANZ_KALENDEA",
+    "columns": []
+  },
+  "DWC_V_ANZ_SCHALTUNG_AE": {
+    "name": "DWC_V_ANZ_SCHALTUNG_AE",
+    "columns": []
+  },
+  "DWC_V_ANZ_SCHALTUNG_KONKURRENZ": {
+    "name": "DWC_V_ANZ_SCHALTUNG_KONKURRENZ",
+    "columns": []
+  },
+  "DWC_V_ANZ_SCHALTUNG_MONATSSPLIT": {
+    "name": "DWC_V_ANZ_SCHALTUNG_MONATSSPLIT",
+    "columns": []
+  },
+  "DWC_V_ANZ_SORECH": {
+    "name": "DWC_V_ANZ_SORECH",
+    "columns": []
+  },
+  "DWC_V_ANZ_SORECHN": {
+    "name": "DWC_V_ANZ_SORECHN",
+    "columns": []
+  },
+  "DWC_V_ANZ_VERTBUCH_AE": {
+    "name": "DWC_V_ANZ_VERTBUCH_AE",
+    "columns": []
+  },
+  "DWC_V_ANZ_ZUSCHL_SK": {
+    "name": "DWC_V_ANZ_ZUSCHL_SK",
+    "columns": []
+  },
+  "DWC_V_CRM_ADRESSE": {
+    "name": "DWC_V_CRM_ADRESSE",
+    "columns": []
+  },
+  "DWC_V_CRM_AKTION": {
+    "name": "DWC_V_CRM_AKTION",
+    "columns": []
+  },
+  "DWC_V_CRM_JOBTAB": {
+    "name": "DWC_V_CRM_JOBTAB",
+    "columns": []
+  },
+  "DWC_V_CRM_KUNDEN": {
+    "name": "DWC_V_CRM_KUNDEN",
+    "columns": []
+  },
+  "DWC_V_CRM_MONATE": {
+    "name": "DWC_V_CRM_MONATE",
+    "columns": []
+  },
+  "DWC_V_CRM_PRODUKT": {
+    "name": "DWC_V_CRM_PRODUKT",
+    "columns": []
+  },
+  "DWC_V_CRM_STEUERSATZ": {
+    "name": "DWC_V_CRM_STEUERSATZ",
+    "columns": []
+  },
+  "DWC_V_CRM_VERLBER": {
+    "name": "DWC_V_CRM_VERLBER",
+    "columns": []
+  },
+  "DWC_V_CRM_WAEHKURS": {
+    "name": "DWC_V_CRM_WAEHKURS",
+    "columns": []
+  },
+  "DWC_V_WWS_ARTIKEL": {
+    "name": "DWC_V_WWS_ARTIKEL",
+    "columns": []
+  },
+  "DWC_V_WWS_ARTIKELPREISE": {
+    "name": "DWC_V_WWS_ARTIKELPREISE",
+    "columns": []
+  },
+  "DWC_V_WWS_AUFTRAG_KOPF": {
+    "name": "DWC_V_WWS_AUFTRAG_KOPF",
+    "columns": []
+  },
+  "DWC_V_WWS_AUFTRAG_POSITION": {
+    "name": "DWC_V_WWS_AUFTRAG_POSITION",
+    "columns": []
+  },
+  "DWC_V_WWS_FAKTURA": {
+    "name": "DWC_V_WWS_FAKTURA",
+    "columns": []
+  },
+  "DWC_V_WWS_FAKTURA_DRILL": {
+    "name": "DWC_V_WWS_FAKTURA_DRILL",
+    "columns": []
+  },
+  "DWC_V_WWS_LAGER": {
+    "name": "DWC_V_WWS_LAGER",
+    "columns": []
+  },
+  "DWC_V_WWS_LAGERBESTAND": {
+    "name": "DWC_V_WWS_LAGERBESTAND",
+    "columns": []
+  },
+  "DWC_V_WWS_LAGERBESTAND_STICHTAG": {
+    "name": "DWC_V_WWS_LAGERBESTAND_STICHTAG",
+    "columns": []
+  },
+  "DWC_V_WWS_STANDING_ORDER": {
+    "name": "DWC_V_WWS_STANDING_ORDER",
+    "columns": []
+  },
+  "DWC_VK_GNB_ADRESSE_TELE": {
+    "name": "DWC_VK_GNB_ADRESSE_TELE",
+    "columns": []
+  },
+  "DWC_VK_GNB_ADRESSE_TELEMAILREF": {
+    "name": "DWC_VK_GNB_ADRESSE_TELEMAILREF",
+    "columns": []
+  },
+  "DWC_VK_GNB_ADRESSKONTAKTE": {
+    "name": "DWC_VK_GNB_ADRESSKONTAKTE",
+    "columns": []
+  },
+  "DWC_VK_GNB_EXPORT_GETRESPONSE": {
+    "name": "DWC_VK_GNB_EXPORT_GETRESPONSE",
+    "columns": []
+  },
+  "DWD_V_ABO_ABOENDEGRUND": {
+    "name": "DWD_V_ABO_ABOENDEGRUND",
+    "columns": []
+  },
+  "DWD_V_ABO_ADRESSE": {
+    "name": "DWD_V_ABO_ADRESSE",
+    "columns": []
+  },
+  "DWD_V_ABO_AKTION": {
+    "name": "DWD_V_ABO_AKTION",
+    "columns": []
+  },
+  "DWD_V_ABO_BESTELLWEG": {
+    "name": "DWD_V_ABO_BESTELLWEG",
+    "columns": []
+  },
+  "DWD_V_ABO_HEFTNUMMER": {
+    "name": "DWD_V_ABO_HEFTNUMMER",
+    "columns": []
+  },
+  "DWD_V_ABO_IVWLISTRUBRIK": {
+    "name": "DWD_V_ABO_IVWLISTRUBRIK",
+    "columns": []
+  },
+  "DWD_V_ABO_OBJEKT": {
+    "name": "DWD_V_ABO_OBJEKT",
+    "columns": []
+  },
+  "DWD_V_ABO_PREISKATEGORIE": {
+    "name": "DWD_V_ABO_PREISKATEGORIE",
+    "columns": []
+  },
+  "DWD_V_ABO_VERSANDART": {
+    "name": "DWD_V_ABO_VERSANDART",
+    "columns": []
+  },
+  "DWD_V_ABO_ZAHLUNGSART": {
+    "name": "DWD_V_ABO_ZAHLUNGSART",
+    "columns": []
+  },
+  "DWD_V_BUCH_AKTION": {
+    "name": "DWD_V_BUCH_AKTION",
+    "columns": []
+  },
+  "DWD_V_CRM_GESCHLECHT": {
+    "name": "DWD_V_CRM_GESCHLECHT",
+    "columns": []
+  },
+  "DWM_V_ABO_ABOBEWEGUNGEN": {
+    "name": "DWM_V_ABO_ABOBEWEGUNGEN",
+    "columns": []
+  },
+  "DWM_V_ABO_ABOBEWEGUNGEN_GNB": {
+    "name": "DWM_V_ABO_ABOBEWEGUNGEN_GNB",
+    "columns": []
+  },
+  "EAISVIEW": {
+    "name": "EAISVIEW",
+    "columns": []
+  },
+  "EAKAVIEW": {
+    "name": "EAKAVIEW",
+    "columns": []
+  },
+  "EARDVIEW": {
+    "name": "EARDVIEW",
+    "columns": []
+  },
+  "EMAIVIEW": {
+    "name": "EMAIVIEW",
+    "columns": []
+  },
+  "FAKTMANK": {
+    "name": "FAKTMANK",
+    "columns": []
+  },
+  "FAKTMANS": {
+    "name": "FAKTMANS",
+    "columns": []
+  },
+  "FAKTRECH": {
+    "name": "FAKTRECH",
+    "columns": []
+  },
+  "FAKTVIEW": {
+    "name": "FAKTVIEW",
+    "columns": []
+  },
+  "FAKUVIEW": {
+    "name": "FAKUVIEW",
+    "columns": []
+  },
+  "FASUOLVI": {
+    "name": "FASUOLVI",
+    "columns": []
+  },
+  "FASUVIEW": {
+    "name": "FASUVIEW",
+    "columns": []
+  },
+  "FOERDERERVIEW": {
+    "name": "FOERDERERVIEW",
+    "columns": []
+  },
+  "FRAVIEW": {
+    "name": "FRAVIEW",
+    "columns": []
+  },
+  "FREIVIEW": {
+    "name": "FREIVIEW",
+    "columns": []
+  },
+  "FRKSTSUM": {
+    "name": "FRKSTSUM",
+    "columns": []
+  },
+  "GGGPAVIEW": {
+    "name": "GGGPAVIEW",
+    "columns": []
+  },
+  "HERKVIEW": {
+    "name": "HERKVIEW",
+    "columns": []
+  },
+  "HOAUTUEB": {
+    "name": "HOAUTUEB",
+    "columns": []
+  },
+  "HOAUTVW": {
+    "name": "HOAUTVW",
+    "columns": []
+  },
+  "HOBUREVI": {
+    "name": "HOBUREVI",
+    "columns": []
+  },
+  "HONAUSVW": {
+    "name": "HONAUSVW",
+    "columns": []
+  },
+  "HONOVIEW": {
+    "name": "HONOVIEW",
+    "columns": []
+  },
+  "HONVIEW": {
+    "name": "HONVIEW",
+    "columns": []
+  },
+  "HOSTAFVW": {
+    "name": "HOSTAFVW",
+    "columns": []
+  },
+  "KOBUKVIE": {
+    "name": "KOBUKVIE",
+    "columns": []
+  },
+  "KOMMPVIE": {
+    "name": "KOMMPVIE",
+    "columns": []
+  },
+  "KOMWEGVW": {
+    "name": "KOMWEGVW",
+    "columns": []
+  },
+  "KONDVIEW": {
+    "name": "KONDVIEW",
+    "columns": []
+  },
+  "MAERVIEW": {
+    "name": "MAERVIEW",
+    "columns": []
+  },
+  "MAJOBVIE": {
+    "name": "MAJOBVIE",
+    "columns": []
+  },
+  "MATNPABO": {
+    "name": "MATNPABO",
+    "columns": []
+  },
+  "MAVBVIEW": {
+    "name": "MAVBVIEW",
+    "columns": []
+  },
+  "MAZYKVIE": {
+    "name": "MAZYKVIE",
+    "columns": []
+  },
+  "MENUVIEW": {
+    "name": "MENUVIEW",
+    "columns": []
+  },
+  "MPAKTVIE": {
+    "name": "MPAKTVIE",
+    "columns": []
+  },
+  "MUAKERVI": {
+    "name": "MUAKERVI",
+    "columns": []
+  },
+  "MUAKTIVI": {
+    "name": "MUAKTIVI",
+    "columns": []
+  },
+  "MUAKTVVI": {
+    "name": "MUAKTVVI",
+    "columns": []
+  },
+  "MUAKVIEW": {
+    "name": "MUAKVIEW",
+    "columns": []
+  },
+  "MULTIPVI": {
+    "name": "MULTIPVI",
+    "columns": []
+  },
+  "NEWSVIEW": {
+    "name": "NEWSVIEW",
+    "columns": []
+  },
+  "ONLDVIEW": {
+    "name": "ONLDVIEW",
+    "columns": []
+  },
+  "PORTZUVW": {
+    "name": "PORTZUVW",
+    "columns": []
+  },
+  "PRFAVIEW": {
+    "name": "PRFAVIEW",
+    "columns": []
+  },
+  "PRKAVIEW": {
+    "name": "PRKAVIEW",
+    "columns": []
+  },
+  "PRODVIEW": {
+    "name": "PRODVIEW",
+    "columns": []
+  },
+  "QSTEAVIE": {
+    "name": "QSTEAVIE",
+    "columns": []
+  },
+  "QUALVIEW": {
+    "name": "QUALVIEW",
+    "columns": []
+  },
+  "RECHVIEW": {
+    "name": "RECHVIEW",
+    "columns": []
+  },
+  "REKLVIEW": {
+    "name": "REKLVIEW",
+    "columns": []
+  },
+  "RESPVIEW": {
+    "name": "RESPVIEW",
+    "columns": []
+  },
+  "SAPCVIEW": {
+    "name": "SAPCVIEW",
+    "columns": []
+  },
+  "SAPIVIEW": {
+    "name": "SAPIVIEW",
+    "columns": []
+  },
+  "SAPNVIEW": {
+    "name": "SAPNVIEW",
+    "columns": []
+  },
+  "SAPVIEW": {
+    "name": "SAPVIEW",
+    "columns": []
+  },
+  "SAPWVIEW": {
+    "name": "SAPWVIEW",
+    "columns": []
+  },
+  "SELASPVI": {
+    "name": "SELASPVI",
+    "columns": []
+  },
+  "SELMODVI": {
+    "name": "SELMODVI",
+    "columns": []
+  },
+  "SELMPVIE": {
+    "name": "SELMPVIE",
+    "columns": []
+  },
+  "SELPHVIE": {
+    "name": "SELPHVIE",
+    "columns": []
+  },
+  "SELVIEW": {
+    "name": "SELVIEW",
+    "columns": []
+  },
+  "TAGVIEW": {
+    "name": "TAGVIEW",
+    "columns": []
+  },
+  "TEILVIEW": {
+    "name": "TEILVIEW",
+    "columns": []
+  },
+  "TELAVIEW": {
+    "name": "TELAVIEW",
+    "columns": []
+  },
+  "TELEVIEW": {
+    "name": "TELEVIEW",
+    "columns": []
+  },
+  "TERMVIEW": {
+    "name": "TERMVIEW",
+    "columns": []
+  },
+  "TERPLAVI": {
+    "name": "TERPLAVI",
+    "columns": []
+  },
+  "TPWHVIEW": {
+    "name": "TPWHVIEW",
+    "columns": []
+  },
+  "TRAAVIEW": {
+    "name": "TRAAVIEW",
+    "columns": []
+  },
+  "TRABNVIE": {
+    "name": "TRABNVIE",
+    "columns": []
+  },
+  "TRABVIEW": {
+    "name": "TRABVIEW",
+    "columns": []
+  },
+  "TRANSFVW": {
+    "name": "TRANSFVW",
+    "columns": []
+  },
+  "TRANSUUIDVIEW": {
+    "name": "TRANSUUIDVIEW",
+    "columns": []
+  },
+  "TRBEVIEW": {
+    "name": "TRBEVIEW",
+    "columns": []
+  },
+  "TRBUVIEW": {
+    "name": "TRBUVIEW",
+    "columns": []
+  },
+  "TROBSVIEW": {
+    "name": "TROBSVIEW",
+    "columns": []
+  },
+  "TRRENVIE": {
+    "name": "TRRENVIE",
+    "columns": []
+  },
+  "TRREVIEW": {
+    "name": "TRREVIEW",
+    "columns": []
+  },
+  "UUIDVIEW": {
+    "name": "UUIDVIEW",
+    "columns": []
+  },
+  "VERKUVIE": {
+    "name": "VERKUVIE",
+    "columns": []
+  },
+  "VERPVIEW": {
+    "name": "VERPVIEW",
+    "columns": []
+  },
+  "VERTVIEW": {
+    "name": "VERTVIEW",
+    "columns": []
+  },
+  "VERWEND3": {
+    "name": "VERWEND3",
+    "columns": []
+  },
+  "VIEWQSTE": {
+    "name": "VIEWQSTE",
+    "columns": []
+  },
+  "VLR1VIEW": {
+    "name": "VLR1VIEW",
+    "columns": []
+  },
+  "VLR2VIEW": {
+    "name": "VLR2VIEW",
+    "columns": []
+  },
+  "VLR3VIEW": {
+    "name": "VLR3VIEW",
+    "columns": []
+  },
+  "VLS1VIEW": {
+    "name": "VLS1VIEW",
+    "columns": []
+  },
+  "VLS2VIEW": {
+    "name": "VLS2VIEW",
+    "columns": []
+  },
+  "VLS3VIEW": {
+    "name": "VLS3VIEW",
+    "columns": []
+  },
+  "VORGVIEW": {
+    "name": "VORGVIEW",
+    "columns": []
+  },
+  "VPAAVIEW": {
+    "name": "VPAAVIEW",
+    "columns": []
+  },
+  "VPARVIEW": {
+    "name": "VPARVIEW",
+    "columns": []
+  },
+  "VZMAKOST": {
+    "name": "VZMAKOST",
+    "columns": []
+  },
+  "VZPRVIEW": {
+    "name": "VZPRVIEW",
+    "columns": []
+  },
+  "VZPVVIEW": {
+    "name": "VZPVVIEW",
+    "columns": []
+  },
+  "VZTYPVIE": {
+    "name": "VZTYPVIE",
+    "columns": []
+  },
+  "WAEVIEW": {
+    "name": "WAEVIEW",
+    "columns": []
+  },
+  "WAP2VIEW": {
+    "name": "WAP2VIEW",
+    "columns": []
+  },
+  "WAPRVIEW": {
+    "name": "WAPRVIEW",
+    "columns": []
+  },
+  "WAVAVIEW": {
+    "name": "WAVAVIEW",
+    "columns": []
+  },
+  "WBZSTAMMVIEW": {
+    "name": "WBZSTAMMVIEW",
+    "columns": []
+  },
+  "WEKVIEW": {
+    "name": "WEKVIEW",
+    "columns": []
+  },
+  "WSELVIEW": {
+    "name": "WSELVIEW",
+    "columns": []
+  },
+  "WTDPVIEW": {
+    "name": "WTDPVIEW",
+    "columns": []
+  },
+  "WTDVIEW": {
+    "name": "WTDVIEW",
+    "columns": []
+  },
+  "WTPRVIEW": {
+    "name": "WTPRVIEW",
+    "columns": []
+  },
+  "WVTPVIEW": {
+    "name": "WVTPVIEW",
+    "columns": []
+  },
+  "ZRBEIVIE": {
+    "name": "ZRBEIVIE",
+    "columns": []
+  },
+  "ZRBELVW": {
+    "name": "ZRBELVW",
+    "columns": []
+  },
+  "ZRHEFTVW": {
+    "name": "ZRHEFTVW",
+    "columns": []
+  },
+  "ZROBJVIE": {
+    "name": "ZROBJVIE",
+    "columns": []
+  }
+}
