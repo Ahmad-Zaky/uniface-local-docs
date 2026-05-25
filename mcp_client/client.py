@@ -1,9 +1,8 @@
 #!/usr/bin/env python3
 """
-Uniface 10.4 docs MCP client — pluggable LLM backend.
+Generic MCP client — works with any MCP server.
 
 Supports multiple LLM providers via a common LLMBackend interface.
-Groq is the default (free tier, no credit card needed).
 
 Provider       SDK to install          API key env var          Free tier
 ----------     --------------------    ---------------------    ---------
@@ -17,12 +16,22 @@ openai         pip install openai      OPENAI_API_KEY           no
 github         pip install openai      GITHUB_PAT               yes (free tier)
 
 Usage:
-  python client.py                              # interactive, auto-detect provider
-  python client.py --provider groq              # explicit provider
-  python client.py --provider claude --demo     # demo mode with Claude
-  python client.py --provider gemini --prompt "What is trigger clear?"
-  python client.py --provider openai            # or any OpenAI-compatible endpoint
-  python client.py --provider github            # GitHub Models (gpt-4o, gpt-5, etc.)
+  # Point at any MCP server:
+  python client.py --server /path/to/mcp_server/server.py
+
+  # Explicit provider:
+  python client.py --server /path/to/server.py --provider groq
+
+  # Custom system prompt:
+  python client.py --server /path/to/server.py \\
+    --system-prompt "You are a helpful assistant. Use the available tools."
+
+  # Single question and exit:
+  python client.py --server /path/to/server.py --prompt "What is X?"
+
+  # Demo mode — runs every line in an examples file:
+  python client.py --server /path/to/server.py \\
+    --examples /path/to/examples.txt --demo
 """
 
 from __future__ import annotations
@@ -32,45 +41,32 @@ import argparse
 import asyncio
 import json
 import os
+import re
 import sys
+import uuid
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any
 
 try:
     from dotenv import load_dotenv
-    load_dotenv()
+    load_dotenv(Path(__file__).resolve().parent.parent / ".env")
 except ImportError:
     pass
 
 from mcp import ClientSession, StdioServerParameters
 from mcp.client.stdio import stdio_client
 
-# ── Config ─────────────────────────────────────────────────────────────
+# ── Default system prompt ───────────────────────────────────────────────────
 
-SERVER_PATH = Path(__file__).parent.parent / "mcp_server" / "server.py"
-
-SYSTEM_PROMPT = (
-    "You are a Uniface 10.4 documentation assistant. "
+DEFAULT_SYSTEM_PROMPT = (
+    "You are a helpful assistant. "
     "Always use the available tools to look up information before answering — "
-    "do not rely on prior knowledge. "
-    "Try different keywords if a first search is too broad or returns no results. "
-    "Cite the page title and URL when referencing documentation."
+    "do not rely on prior knowledge."
 )
 
-EXAMPLE_PROMPTS = [
-    "List all the documentation sections and how many pages each has.",
-    "What does 'trigger clear' do in Uniface? Give me the full details.",
-    "How do I develop web applications with Uniface? Search for relevant pages.",
-    "What is a Derived Component Field?",
-    "Show me the top-level structure of the Uniface documentation tree.",
-    "I want to connect Uniface to an Oracle database. What should I read?",
-    "Look up the glossary entry for 'entity' in Uniface.",
-    "What ProcScript statements are available for working with files?",
-]
 
-
-# ── Shared data types ───────────────────────────────────────────────────
+# ── Shared data types ───────────────────────────────────────────────────────
 
 @dataclass
 class ToolCall:
@@ -84,7 +80,6 @@ class Message:
     role: str                                    # "user" | "assistant" | "tool"
     text: str | None = None
     tool_calls: list[ToolCall] = field(default_factory=list)
-    # populated only when role == "tool"
     tool_call_id: str | None = None
     tool_name: str | None = None
     tool_result: str | None = None
@@ -97,7 +92,7 @@ class MCPTool:
     input_schema: dict
 
 
-# ── LLMBackend ABC ──────────────────────────────────────────────────────
+# ── LLMBackend ABC ──────────────────────────────────────────────────────────
 
 class LLMBackend(abc.ABC):
     """
@@ -137,8 +132,23 @@ class LLMBackend(abc.ABC):
         """E.g. 'Groq / llama-3.3-70b-versatile'."""
 
 
-# ── Groq backend ────────────────────────────────────────────────────────
-# Groq is OpenAI-compatible. Free tier at https://console.groq.com
+# ── Helpers ─────────────────────────────────────────────────────────────────
+
+def _parse_python_tag_calls(text: str) -> list[tuple[str, dict]]:
+    """Parse <|python_tag|>func({...}) blocks that some Llama variants emit as plain text."""
+    results = []
+    pattern = re.compile(r'<\|python_tag\|>\s*(\w+)\s*\((\{.*?\})?\s*\)', re.DOTALL)
+    for m in pattern.finditer(text):
+        args_str = m.group(2) or "{}"
+        try:
+            args = json.loads(args_str)
+        except json.JSONDecodeError:
+            args = {}
+        results.append((m.group(1), args))
+    return results
+
+
+# ── Groq backend ────────────────────────────────────────────────────────────
 
 class GroqBackend(LLMBackend):
     DEFAULT_MODEL = "llama-3.3-70b-versatile"
@@ -204,11 +214,19 @@ class GroqBackend(LLMBackend):
                 ToolCall(tc.id, tc.function.name, json.loads(tc.function.arguments))
                 for tc in msg.tool_calls
             ]
+        # Llama sometimes emits <|python_tag|>func({...}) as plain text instead
+        # of structured tool calls — detect and convert so the agent loop works.
+        if msg.content:
+            fallback = _parse_python_tag_calls(msg.content)
+            if fallback:
+                return None, [
+                    ToolCall(id=str(uuid.uuid4()), name=name, arguments=args)
+                    for name, args in fallback
+                ]
         return msg.content, []
 
 
-# ── Anthropic / Claude backend ──────────────────────────────────────────
-# https://console.anthropic.com
+# ── Anthropic / Claude backend ──────────────────────────────────────────────
 
 class ClaudeBackend(LLMBackend):
     DEFAULT_MODEL = "claude-haiku-4-5-20251001"
@@ -237,9 +255,6 @@ class ClaudeBackend(LLMBackend):
         return f"Anthropic / {self._model}"
 
     def complete(self, system, history, tools):
-        # Anthropic's message format differs from OpenAI's:
-        # - tool results are sent as user messages with "tool_result" content blocks
-        # - consecutive tool results in one turn are batched into a single user message
         anthropic_msgs: list[dict] = []
         i = 0
         while i < len(history):
@@ -261,7 +276,6 @@ class ClaudeBackend(LLMBackend):
                 anthropic_msgs.append({"role": "assistant", "content": content})
                 i += 1
             elif m.role == "tool":
-                # Batch all consecutive tool results into one user message
                 results = []
                 while i < len(history) and history[i].role == "tool":
                     t = history[i]
@@ -299,8 +313,7 @@ class ClaudeBackend(LLMBackend):
         return text, calls
 
 
-# ── Google Gemini backend ───────────────────────────────────────────────
-# Free tier at https://aistudio.google.com
+# ── Google Gemini backend ───────────────────────────────────────────────────
 
 class GeminiBackend(LLMBackend):
     DEFAULT_MODEL = "gemini-2.0-flash"
@@ -407,16 +420,13 @@ class GeminiBackend(LLMBackend):
         for part in resp.candidates[0].content.parts:
             fc = getattr(part, "function_call", None)
             if fc and fc.name:
-                # Gemini has no call IDs — use name as a stable identifier
                 calls.append(ToolCall(id=fc.name, name=fc.name, arguments=dict(fc.args)))
             elif getattr(part, "text", None):
                 text = part.text
         return text, calls
 
 
-# ── OpenAI backend ──────────────────────────────────────────────────────
-# Also works for any OpenAI-compatible endpoint (Ollama, Together, etc.)
-# Set OPENAI_BASE_URL to point at a different host.
+# ── OpenAI backend ──────────────────────────────────────────────────────────
 
 class OpenAIBackend(LLMBackend):
     DEFAULT_MODEL = "gpt-4o-mini"
@@ -490,9 +500,7 @@ class OpenAIBackend(LLMBackend):
         return msg.content, []
 
 
-# ── GitHub Models backend ───────────────────────────────────────────────
-# Free tier via GitHub PAT — https://github.com/marketplace/models
-# OpenAI-compatible endpoint hosted on Azure.
+# ── GitHub Models backend ───────────────────────────────────────────────────
 
 class GitHubBackend(OpenAIBackend):
     DEFAULT_MODEL = "gpt-4o"
@@ -516,7 +524,7 @@ class GitHubBackend(OpenAIBackend):
         return f"GitHub Models / {self._model}"
 
 
-# ── Shared helper ───────────────────────────────────────────────────────
+# ── Shared helper ───────────────────────────────────────────────────────────
 
 def _to_openai_tools(tools: list[MCPTool]) -> list[dict]:
     return [
@@ -532,7 +540,7 @@ def _to_openai_tools(tools: list[MCPTool]) -> list[dict]:
     ]
 
 
-# ── Provider registry ───────────────────────────────────────────────────
+# ── Provider registry ───────────────────────────────────────────────────────
 
 BACKENDS: dict[str, type[LLMBackend]] = {
     "groq":   GroqBackend,
@@ -552,7 +560,6 @@ _ENV_KEYS = {
 
 
 def _auto_detect() -> str:
-    """Return the first provider whose API key is already set."""
     for name, var in _ENV_KEYS.items():
         if os.environ.get(var):
             return name
@@ -568,12 +575,13 @@ def build_backend(provider: str | None) -> LLMBackend:
     return cls.from_env()
 
 
-# ── Agent loop ──────────────────────────────────────────────────────────
+# ── Agent loop ──────────────────────────────────────────────────────────────
 
 async def run_agent(
     backend: LLMBackend,
     session: ClientSession,
     prompt: str,
+    system_prompt: str,
 ) -> None:
     raw_tools = (await session.list_tools()).tools
     tools = [
@@ -588,7 +596,7 @@ async def run_agent(
     print('═' * 64)
 
     while True:
-        text, tool_calls = backend.complete(SYSTEM_PROMPT, history, tools)
+        text, tool_calls = backend.complete(system_prompt, history, tools)
 
         if not tool_calls:
             history.append(Message(role="assistant", text=text))
@@ -616,10 +624,16 @@ async def run_agent(
             ))
 
 
-# ── Client modes ────────────────────────────────────────────────────────
+# ── Client modes ────────────────────────────────────────────────────────────
 
-async def interactive(backend: LLMBackend, session: ClientSession) -> None:
-    print(f"\nUniface 10.4 Docs Assistant  [{backend.label}]")
+async def interactive(
+    backend: LLMBackend,
+    session: ClientSession,
+    system_prompt: str,
+    examples: list[str],
+    server_label: str,
+) -> None:
+    print(f"\nMCP Assistant  [{backend.label}]  server: {server_label}")
     print("Commands: 'examples' · 'quit'  |  Ctrl-C to exit\n")
     while True:
         try:
@@ -632,24 +646,35 @@ async def interactive(backend: LLMBackend, session: ClientSession) -> None:
         if prompt.lower() in ("quit", "exit", "q"):
             break
         if prompt.lower() == "examples":
-            for i, p in enumerate(EXAMPLE_PROMPTS, 1):
-                print(f"  {i:2d}. {p}")
+            if not examples:
+                print("  No examples loaded. Pass --examples <file> to load prompts.")
+            else:
+                for i, p in enumerate(examples, 1):
+                    print(f"  {i:2d}. {p}")
             continue
-        if prompt.isdigit():
+        if prompt.isdigit() and examples:
             n = int(prompt)
-            if 1 <= n <= len(EXAMPLE_PROMPTS):
-                prompt = EXAMPLE_PROMPTS[n - 1]
+            if 1 <= n <= len(examples):
+                prompt = examples[n - 1]
                 print(f"  → {prompt}")
-        await run_agent(backend, session, prompt)
+        await run_agent(backend, session, prompt, system_prompt)
 
 
-async def demo(backend: LLMBackend, session: ClientSession) -> None:
-    print(f"\nDemo mode [{backend.label}] — {len(EXAMPLE_PROMPTS)} prompts\n")
-    for prompt in EXAMPLE_PROMPTS:
-        await run_agent(backend, session, prompt)
+async def demo(
+    backend: LLMBackend,
+    session: ClientSession,
+    system_prompt: str,
+    examples: list[str],
+) -> None:
+    if not examples:
+        print("Demo mode requires an examples file. Pass --examples <file>.")
+        return
+    print(f"\nDemo mode [{backend.label}] — {len(examples)} prompt(s)\n")
+    for prompt in examples:
+        await run_agent(backend, session, prompt, system_prompt)
 
 
-# ── Entry point ─────────────────────────────────────────────────────────
+# ── Entry point ─────────────────────────────────────────────────────────────
 
 async def main() -> None:
     ap = argparse.ArgumentParser(
@@ -657,14 +682,56 @@ async def main() -> None:
         formatter_class=argparse.RawDescriptionHelpFormatter,
     )
     ap.add_argument(
+        "--server", "-S",
+        required=True,
+        metavar="PATH",
+        help="Path to the MCP server script (e.g. ../DOCUMENTATION/mcp_server/server.py)",
+    )
+    ap.add_argument(
         "--provider", "-p",
         choices=list(BACKENDS),
         metavar="|".join(BACKENDS),
         help="LLM provider (default: auto-detect from env vars)",
     )
-    ap.add_argument("--demo",   action="store_true", help="Run all built-in example prompts")
-    ap.add_argument("--prompt", metavar="TEXT",      help="Ask a single question and exit")
+    ap.add_argument(
+        "--system-prompt",
+        default=DEFAULT_SYSTEM_PROMPT,
+        metavar="TEXT",
+        help="System prompt for the LLM (default: generic tool-use prompt)",
+    )
+    ap.add_argument(
+        "--examples",
+        metavar="FILE",
+        help="Text file with one example prompt per line (used by --demo and 'examples' command)",
+    )
+    ap.add_argument(
+        "--demo",
+        action="store_true",
+        help="Run all prompts from --examples file and exit",
+    )
+    ap.add_argument(
+        "--prompt",
+        metavar="TEXT",
+        help="Ask a single question and exit",
+    )
     args = ap.parse_args()
+
+    server_path = Path(args.server).resolve()
+    if not server_path.exists():
+        print(f"ERROR: server not found at {server_path}", file=sys.stderr)
+        sys.exit(1)
+
+    examples: list[str] = []
+    if args.examples:
+        examples_path = Path(args.examples)
+        if not examples_path.exists():
+            print(f"ERROR: examples file not found: {examples_path}", file=sys.stderr)
+            sys.exit(1)
+        examples = [
+            line.strip()
+            for line in examples_path.read_text(encoding="utf-8").splitlines()
+            if line.strip() and not line.startswith("#")
+        ]
 
     try:
         backend = build_backend(args.provider)
@@ -672,17 +739,15 @@ async def main() -> None:
         print(f"ERROR: {e}", file=sys.stderr)
         sys.exit(1)
 
-    if not SERVER_PATH.exists():
-        print(f"ERROR: MCP server not found at {SERVER_PATH}", file=sys.stderr)
-        sys.exit(1)
-
     server_params = StdioServerParameters(
         command=sys.executable,
-        args=[str(SERVER_PATH)],
-        cwd=str(SERVER_PATH.parent),
+        args=[str(server_path)],
+        cwd=str(server_path.parent),
     )
 
-    print(f"Connecting to Uniface docs MCP server  [{backend.label}]…")
+    server_label = server_path.parent.parent.name  # e.g. "DOCUMENTATION" or "DATABASE_SCHEMA"
+    print(f"Connecting to MCP server  [{backend.label}]  ({server_label})…")
+
     async with stdio_client(server_params) as (read, write):
         async with ClientSession(read, write) as session:
             await session.initialize()
@@ -690,11 +755,11 @@ async def main() -> None:
             print(f"Ready — {len(names)} tools: {', '.join(names)}\n")
 
             if args.prompt:
-                await run_agent(backend, session, args.prompt)
+                await run_agent(backend, session, args.prompt, args.system_prompt)
             elif args.demo:
-                await demo(backend, session)
+                await demo(backend, session, args.system_prompt, examples)
             else:
-                await interactive(backend, session)
+                await interactive(backend, session, args.system_prompt, examples, server_label)
 
 
 if __name__ == "__main__":

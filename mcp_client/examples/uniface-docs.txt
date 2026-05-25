@@ -1,0 +1,11 @@
+# Uniface 10.4 documentation example prompts
+# One prompt per line. Lines starting with # are ignored.
+
+List all the documentation sections and how many pages each has.
+What does 'trigger clear' do in Uniface? Give me the full details.
+How do I develop web applications with Uniface? Search for relevant pages.
+What is a Derived Component Field?
+Show me the top-level structure of the Uniface documentation tree.
+I want to connect Uniface to an Oracle database. What should I read?
+Look up the glossary entry for 'entity' in Uniface.
+What ProcScript statements are available for working with files?

@@ -1,0 +1,13 @@
+# Database schema example prompts
+# One prompt per line. Lines starting with # are ignored.
+
+What tenants and database schemas are available?
+Show me the full structure of the AABSLGUE table in the xxx tenant.
+Which tables have an E_MANDANT column across all tenants?
+Compare the AABSLGUE table between the xxx and mex tenants — are there structural differences?
+Give me a high-level overview of the differences between the xxx and mex schemas.
+What changed in the xxx schema between the two most recent snapshots?
+Search for all tables related to "auftrag" in the mex stage schema.
+List all tables in the xxx tenant that start with ABO.
+Does the PAYVER table have the same columns in both tenants?
+What sequences are defined in the mex stage schema?

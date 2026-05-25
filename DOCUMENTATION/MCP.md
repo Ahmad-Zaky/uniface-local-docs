@@ -56,36 +56,49 @@ results into a natural-language answer.
 
 ## 2. Project structure
 
+The MCP client is shared across all servers and lives one level above
+`DOCUMENTATION/` at the `UNIFACE_MCP` root.
+
 ```
-uniface-docs/
-├── scraper/
-│   ├── scrape.py                # Playwright scraper (run first)
-│   ├── build_site_data.py       # Builds SPA assets (docs.json etc.)
-│   ├── build_mcp_data.py        # ← NEW: builds MCP assets
-│   └── requirements.txt
+UNIFACE_MCP/
 │
-├── site/
-│   └── assets/
-│       ├── toc.json             # (SPA + MCP — unchanged)
-│       ├── docs.json            # (SPA only — unchanged)
-│       ├── search-meta.json     # (SPA + MCP — unchanged)
-│       ├── pages/               # ← NEW: one JSON per page, text-only
-│       │   └── <page-id>.json
-│       └── index/               # ← NEW: precomputed lookup indexes
-│           ├── sections.json
-│           ├── title-lookup.json
-│           └── breadcrumb-map.json
+├── .env                             # ← API keys (copy from .env.example)
+├── .env.example                     #   template — fill in and rename to .env
 │
-├── mcp_server/
-│   ├── server.py                # ← NEW: FastMCP server (6 tools)
-│   └── requirements.txt
+├── mcp_client/                      # ← shared client for ALL MCP servers
+│   ├── client.py                    #   generic, takes --server PATH
+│   ├── requirements.txt
+│   └── examples/
+│       ├── uniface-docs.txt         #   example prompts for this server
+│       └── db-schema.txt            #   example prompts for the schema server
 │
-├── mcp_client/
-│   ├── client.py                # ← NEW: Groq-powered interactive client
-│   └── requirements.txt
+├── DOCUMENTATION/
+│   ├── scraper/
+│   │   ├── scrape.py                #   Playwright scraper (run first)
+│   │   ├── build_site_data.py       #   builds SPA assets (docs.json etc.)
+│   │   ├── build_mcp_data.py        #   builds MCP assets
+│   │   └── requirements.txt
+│   │
+│   ├── site/
+│   │   └── assets/
+│   │       ├── toc.json
+│   │       ├── docs.json
+│   │       ├── search-meta.json
+│   │       ├── pages/               #   one JSON per page, text-only
+│   │       └── index/               #   precomputed lookup indexes
+│   │
+│   ├── mcp_server/
+│   │   ├── server.py                #   FastMCP server (6 tools)
+│   │   └── requirements.txt
+│   │
+│   ├── README.md
+│   └── MCP.md                       #   this file
 │
-├── README.md                    # Browser SPA guide
-└── MCP.md                       # This file
+└── DATABASE_SCHEMA/
+    ├── mcp_server/
+    │   ├── server.py                #   FastMCP server (9 tools)
+    │   └── requirements.txt
+    └── ...                          #   see DATABASE_SCHEMA_MCP.md
 ```
 
 ---
@@ -108,8 +121,8 @@ uniface-docs/
 This is a one-time step (re-run only after a fresh scrape).
 
 ```bash
-cd scraper
-source ../.venv/bin/activate     # or your own venv
+cd DOCUMENTATION/scraper
+source ../../.venv/bin/activate
 
 python build_mcp_data.py
 ```
@@ -145,25 +158,33 @@ python build_mcp_data.py --data /path/to/scraped/data --out ../site/assets
 
 ## 5. Step 2 — Install dependencies
 
-The server needs `mcp`. The client needs `mcp`, `python-dotenv`, and the
-SDK for whichever provider you choose.
+The MCP server requires `mcp`. The client additionally needs `python-dotenv`
+and the SDK for your chosen LLM provider.
+
+Create the shared venv at the `UNIFACE_MCP` root (step 1 ran from
+`DOCUMENTATION/scraper/`, so navigate back first):
 
 ```bash
+cd ../..   # UNIFACE_MCP/ root
+python3 -m venv .venv
 source .venv/bin/activate
 
-pip install mcp python-dotenv         # always required
+pip install -r mcp_client/requirements.txt
+```
 
-# Install ONE (or more) provider SDKs:
-pip install groq                      # Groq  (free)
-pip install anthropic                 # Claude
-pip install google-genai              # Gemini (free)
-pip install openai                    # OpenAI, GitHub Models, or any OpenAI-compatible endpoint
+`mcp_client/requirements.txt` covers everything: `mcp`, `python-dotenv`,
+`groq`, `anthropic`, `google-genai`, `openai`.
+
+If the venv already exists:
+
+```bash
+source .venv/bin/activate   # from UNIFACE_MCP/ root
 ```
 
 Verify:
 
 ```bash
-python -c "import mcp; print('OK')"
+python3 -c "import mcp; print('OK')"
 # → OK
 ```
 
@@ -183,9 +204,11 @@ The client auto-detects which provider to use based on which key is set.
 
 ### Recommended — `.env` file
 
-The project ships a `.env.example` template. Copy it and fill in your key:
+The project ships a `.env.example` template at the `UNIFACE_MCP` root.
+Copy it and fill in your key:
 
 ```bash
+cd UNIFACE_MCP
 cp .env.example .env
 ```
 
@@ -197,11 +220,12 @@ GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxx
 
 # or GitHub Models (free, no credit card):
 # GITHUB_PAT=github_pat_xxxxxxxxxxxxxxxxxxxx
-# GITHUB_MODEL=gpt-5          # optional — default is gpt-4o
+# GITHUB_MODEL=gpt-4o          # optional — default is gpt-4o
 ```
 
-The client loads `.env` automatically on startup. The file is listed in
-`.gitignore` so your keys never end up in version control.
+The client loads `.env` from the `UNIFACE_MCP` root automatically on
+startup, regardless of which directory you run from. The file is listed
+in `.gitignore` so your keys never end up in version control.
 
 ### Alternative — shell export
 
@@ -224,29 +248,27 @@ export GROQ_API_KEY=gsk_xxxxxxxxxxxxxxxxxxxx
 
 ## 7. Step 4 — Run the client
 
-The client automatically starts the MCP server as a subprocess — you
-don't need to launch the server separately.
+Run the shared client from the `UNIFACE_MCP` root. It automatically
+starts the MCP server as a subprocess — you don't need to launch the
+server separately.
+
+```bash
+cd UNIFACE_MCP
+python mcp_client/client.py \
+  --server DOCUMENTATION/mcp_server/server.py \
+  --system-prompt "You are a Uniface 10.4 documentation assistant. Always use the available tools to look up information before answering — do not rely on prior knowledge. Cite the page title and URL when referencing documentation." \
+  --examples mcp_client/examples/uniface-docs.txt
+```
 
 Use `--provider` to pick a backend explicitly, or omit it to
 auto-detect from whichever API key is set.
 
-### Interactive mode (recommended for exploration)
-
-```bash
-python mcp_client/client.py                    # auto-detect provider
-python mcp_client/client.py --provider groq    # explicit
-python mcp_client/client.py --provider claude
-python mcp_client/client.py --provider gemini
-python mcp_client/client.py --provider openai
-python mcp_client/client.py --provider github  # GitHub Models (gpt-4o / gpt-5)
 ```
-
-```
-Connecting to Uniface docs MCP server…
+Connecting to MCP server  [Groq / llama-3.3-70b-versatile]  (DOCUMENTATION)…
 Ready — 6 tools: search_docs, get_page, list_sections, browse_section, lookup_reference, get_toc_children
 
-Uniface 10.4 Docs Assistant  (Ctrl-C or 'quit' to exit)
-Type 'examples' to see sample questions.
+MCP Assistant  [Groq / llama-3.3-70b-versatile]  server: DOCUMENTATION
+Commands: 'examples' · 'quit'  |  Ctrl-C to exit
 
 You: ▌
 ```
@@ -259,7 +281,8 @@ as it happens so you can follow exactly what the model is looking up.
 | Input | Action |
 |---|---|
 | Any question | Run the agentic tool-calling loop and print the answer |
-| `examples` | Print the 8 built-in example prompts |
+| `examples` | Print the loaded example prompts |
+| `1`–`8` | Run example prompt by number |
 | `quit` / `exit` / `q` | Exit |
 | `Ctrl-C` | Exit |
 
@@ -268,8 +291,11 @@ as it happens so you can follow exactly what the model is looking up.
 ### Demo mode (runs all 8 example prompts)
 
 ```bash
-python mcp_client/client.py --demo
-python mcp_client/client.py --provider gemini --demo
+cd UNIFACE_MCP
+python mcp_client/client.py \
+  --server DOCUMENTATION/mcp_server/server.py \
+  --examples mcp_client/examples/uniface-docs.txt \
+  --demo
 ```
 
 Good for a first run to see the system working end-to-end.
@@ -279,8 +305,9 @@ Good for a first run to see the system working end-to-end.
 ### Single-question mode
 
 ```bash
-python mcp_client/client.py --prompt "What is a ProcScript trigger?"
-python mcp_client/client.py --provider claude --prompt "Explain entity in Uniface."
+cd UNIFACE_MCP
+python mcp_client/client.py --server DOCUMENTATION/mcp_server/server.py --prompt "What is a ProcScript trigger?"
+python mcp_client/client.py --server DOCUMENTATION/mcp_server/server.py --provider claude --prompt "Explain entity in Uniface."
 ```
 
 Prints the answer and exits. Useful for scripting or quick lookups.
@@ -333,16 +360,16 @@ this project on your machine:
 
 ```bash
 claude mcp add -s user uniface-docs \
-  /absolute/path/to/uniface-docs/.venv/bin/python \
-  /absolute/path/to/uniface-docs/mcp_server/server.py
+  /absolute/path/to/UNIFACE_MCP/.venv/bin/python \
+  /absolute/path/to/UNIFACE_MCP/DOCUMENTATION/mcp_server/server.py
 ```
 
-**Sample — if the project lives at `/home/user/uniface-docs`:**
+**Sample — if the project lives at `/home/user/UNIFACE_MCP`:**
 
 ```bash
 claude mcp add -s user uniface-docs \
-  /home/user/uniface-docs/.venv/bin/python \
-  /home/user/uniface-docs/mcp_server/server.py
+  /home/user/UNIFACE_MCP/.venv/bin/python \
+  /home/user/UNIFACE_MCP/DOCUMENTATION/mcp_server/server.py
 ```
 
 The `-s user` flag registers the server at user scope so it is available
@@ -374,7 +401,7 @@ Follow the prompts:
 | **Location** | Select **Global** (makes the server available in all projects) |
 | **Enter MCP server name** | `uniface-docs` |
 | **Type** | Select **local** (stdio-based server) |
-| **Command** | `/absolute/path/to/uniface-docs/.venv/bin/python /absolute/path/to/uniface-docs/mcp_server/server.py` |
+| **Command** | `/absolute/path/to/UNIFACE_MCP/.venv/bin/python /absolute/path/to/UNIFACE_MCP/DOCUMENTATION/mcp_server/server.py` |
 
 OpenCode saves the entry to `~/.config/opencode/opencode.jsonc` — you do
 not need to edit that file manually.
@@ -393,9 +420,9 @@ opencode mcp list
 ### Verify the server starts correctly (both tools)
 
 ```bash
-# From the project root — should print tool names and exit cleanly
+# From UNIFACE_MCP root — should print tool names and exit cleanly
 source .venv/bin/activate
-python3 mcp_server/server.py --help 2>/dev/null || echo "server loaded OK"
+python3 DOCUMENTATION/mcp_server/server.py --help 2>/dev/null || echo "server loaded OK"
 ```
 
 ---
@@ -526,13 +553,13 @@ Make sure the `command` path points to the **venv Python**, not the system
 Python — the venv Python is the one with `mcp` installed:
 
 ```bash
-# Find the correct path
+# Find the correct path (run from UNIFACE_MCP root)
 source .venv/bin/activate
 which python
-# → /home/ahmed/Downloads/uniface-docs/.venv/bin/python
+# → /home/user/UNIFACE_MCP/.venv/bin/python
 ```
 
-Use that full path in `claude_desktop_config.json`.
+Use that full path in the `claude mcp add` command.
 
 ### Rate limit errors (`429`)
 
