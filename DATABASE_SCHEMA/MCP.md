@@ -111,7 +111,7 @@ automatically on the next run.
 |---|---|
 | Python 3.10+ | Standard library only for the build script; `mcp` for the server |
 | At least one SQL dump | See Step 1 below |
-| Virtual environment | Recommended — examples below assume the shared `.venv` at the `UNIFACE_MCP` root |
+| Virtual environment | Two venvs: `DATABASE_SCHEMA/.venv` for the MCP server (`mcp` only); root `UNIFACE_MCP/.venv` for the standalone client (all LLM provider SDKs) |
 
 > **Supported dialects**: Oracle (schema-qualified `"SCHEMA"."TABLE"` syntax)
 > and Microsoft SQL Server (`[dbo].[table]` syntax). The build script
@@ -203,33 +203,43 @@ python3 build_schema_data.py --force
 
 ## 6. Step 3 — Install dependencies
 
-The MCP server requires `mcp`. The client additionally needs `python-dotenv`
-and the SDK for your chosen LLM provider.
+There are two separate venvs — one for the MCP server and one for the
+standalone client.
 
-Create the shared venv once at the `UNIFACE_MCP` root:
+### MCP server venv (required for Claude Code / OpenCode integration)
 
 ```bash
-cd ..   # UNIFACE_MCP/ root (skip if already there)
+cd DATABASE_SCHEMA
 python3 -m venv .venv
 source .venv/bin/activate
-
-pip install -r mcp_client/requirements.txt
+pip install -r mcp_server/requirements.txt
 ```
 
-`mcp_client/requirements.txt` covers everything: `mcp`, `python-dotenv`,
-`groq`, `anthropic`, `google-genai`, `openai`.
-
-If the venv already exists, activate it from `DATABASE_SCHEMA/`:
-
-```bash
-source ../.venv/bin/activate
-```
+`mcp_server/requirements.txt` contains only `mcp>=1.0`.
 
 Verify:
 
 ```bash
 python3 -c "import mcp; print('OK')"
 # → OK
+```
+
+### Client venv (required for the standalone `mcp_client`)
+
+```bash
+cd ..   # UNIFACE_MCP/ root
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r mcp_client/requirements.txt
+```
+
+`mcp_client/requirements.txt` covers `mcp`, `python-dotenv`, `groq`,
+`anthropic`, `google-genai`, `openai`.
+
+If the root venv already exists:
+
+```bash
+source ../.venv/bin/activate   # from DATABASE_SCHEMA/
 ```
 
 ---
@@ -243,7 +253,7 @@ key from the environment or a `.env` file — copy `.env.example` at the
 
 ```bash
 cd ..   # UNIFACE_MCP/ root
-source .venv/bin/activate
+source .venv/bin/activate   # root venv — has the LLM provider SDKs
 
 # Interactive mode:
 python3 mcp_client/client.py \
@@ -289,7 +299,7 @@ if you have both registered.
 
 ```bash
 claude mcp add -s user uniface-db \
-  /absolute/path/to/UNIFACE_MCP/.venv/bin/python3 \
+  /absolute/path/to/UNIFACE_MCP/DATABASE_SCHEMA/.venv/bin/python \
   /absolute/path/to/UNIFACE_MCP/DATABASE_SCHEMA/mcp_server/server.py
 ```
 
@@ -297,7 +307,7 @@ Verify:
 
 ```bash
 claude mcp list
-# uniface-db: /path/to/python3 ... - ✓ Connected
+# uniface-db: /path/to/DATABASE_SCHEMA/.venv/bin/python ... - ✓ Connected
 ```
 
 ### Running both servers at once
@@ -307,12 +317,12 @@ register both the docs server and the schema server and Claude will use
 whichever tools fit the question:
 
 ```bash
-# Uniface docs server (register separately — see UNIFACE_MCP root):
+# Uniface docs server (register separately — see DOCUMENTATION/MCP.md):
 # uniface-docs  →  search_docs, get_page, list_sections, …
 
 # Schema server:
 claude mcp add -s user uniface-db \
-  /absolute/path/to/UNIFACE_MCP/.venv/bin/python3 \
+  /absolute/path/to/UNIFACE_MCP/DATABASE_SCHEMA/.venv/bin/python \
   /absolute/path/to/UNIFACE_MCP/DATABASE_SCHEMA/mcp_server/server.py
 
 claude mcp list
@@ -331,7 +341,7 @@ opencode mcp add
 | **Location** | Select **Global** |
 | **Enter MCP server name** | `uniface-db` |
 | **Type** | Select **local** |
-| **Command** | `/absolute/path/to/UNIFACE_MCP/.venv/bin/python3 /absolute/path/to/UNIFACE_MCP/DATABASE_SCHEMA/mcp_server/server.py` |
+| **Command** | `/absolute/path/to/UNIFACE_MCP/DATABASE_SCHEMA/.venv/bin/python /absolute/path/to/UNIFACE_MCP/DATABASE_SCHEMA/mcp_server/server.py` |
 
 ---
 
@@ -652,10 +662,13 @@ for t, envs in reg.items():
 
 ### `ModuleNotFoundError: No module named 'mcp'`
 
-The `mcp` package is not installed in the active environment:
+The `mcp` package is not installed in the server venv. Recreate it:
 
 ```bash
-source ../.venv/bin/activate
+cd DATABASE_SCHEMA
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r mcp_server/requirements.txt
 python3 -c "import mcp; print('OK')"
 ```
 
@@ -683,13 +696,14 @@ CREATE TABLE [dbo].[tablename] (
 
 ### Server fails to start when wired into Claude Code
 
-The `command` path must point to the Python binary that has `mcp` installed:
+The `command` path must point to the Python binary that has `mcp` installed.
+The server uses its own venv inside `DATABASE_SCHEMA/`, not the root venv:
 
 ```bash
-# Find the correct path (from UNIFACE_MCP root):
+# Find the correct path (from DATABASE_SCHEMA/):
 source .venv/bin/activate
-which python3
-# → /path/to/UNIFACE_MCP/.venv/bin/python3
+which python
+# → /path/to/UNIFACE_MCP/DATABASE_SCHEMA/.venv/bin/python
 ```
 
 Use that full path in the `claude mcp add` command.

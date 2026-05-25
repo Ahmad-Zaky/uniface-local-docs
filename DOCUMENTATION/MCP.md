@@ -158,34 +158,46 @@ python build_mcp_data.py --data /path/to/scraped/data --out ../site/assets
 
 ## 5. Step 2 — Install dependencies
 
-The MCP server requires `mcp`. The client additionally needs `python-dotenv`
-and the SDK for your chosen LLM provider.
+There are two separate venvs — one for the MCP server and one for the
+standalone client.
 
-Create the shared venv at the `UNIFACE_MCP` root (step 1 ran from
-`DOCUMENTATION/scraper/`, so navigate back first):
+### MCP server venv (required for Claude Code / OpenCode integration)
 
 ```bash
-cd ../..   # UNIFACE_MCP/ root
+cd DOCUMENTATION
 python3 -m venv .venv
 source .venv/bin/activate
-
-pip install -r mcp_client/requirements.txt
+pip install -r mcp_server/requirements.txt
 ```
 
-`mcp_client/requirements.txt` covers everything: `mcp`, `python-dotenv`,
-`groq`, `anthropic`, `google-genai`, `openai`.
-
-If the venv already exists:
-
-```bash
-source .venv/bin/activate   # from UNIFACE_MCP/ root
-```
+`mcp_server/requirements.txt` contains only `mcp>=1.0`.
 
 Verify:
 
 ```bash
 python3 -c "import mcp; print('OK')"
 # → OK
+```
+
+### Client venv (required for the standalone `mcp_client`)
+
+Navigate back to the `UNIFACE_MCP` root first (step 1 ran from
+`DOCUMENTATION/scraper/`):
+
+```bash
+cd ../..   # UNIFACE_MCP/ root
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r mcp_client/requirements.txt
+```
+
+`mcp_client/requirements.txt` covers `mcp`, `python-dotenv`, `groq`,
+`anthropic`, `google-genai`, `openai`.
+
+If the root venv already exists:
+
+```bash
+source .venv/bin/activate   # from UNIFACE_MCP/ root
 ```
 
 ---
@@ -360,7 +372,7 @@ this project on your machine:
 
 ```bash
 claude mcp add -s user uniface-docs \
-  /absolute/path/to/UNIFACE_MCP/.venv/bin/python \
+  /absolute/path/to/UNIFACE_MCP/DOCUMENTATION/.venv/bin/python \
   /absolute/path/to/UNIFACE_MCP/DOCUMENTATION/mcp_server/server.py
 ```
 
@@ -368,7 +380,7 @@ claude mcp add -s user uniface-docs \
 
 ```bash
 claude mcp add -s user uniface-docs \
-  /home/user/UNIFACE_MCP/.venv/bin/python \
+  /home/user/UNIFACE_MCP/DOCUMENTATION/.venv/bin/python \
   /home/user/UNIFACE_MCP/DOCUMENTATION/mcp_server/server.py
 ```
 
@@ -401,7 +413,7 @@ Follow the prompts:
 | **Location** | Select **Global** (makes the server available in all projects) |
 | **Enter MCP server name** | `uniface-docs` |
 | **Type** | Select **local** (stdio-based server) |
-| **Command** | `/absolute/path/to/UNIFACE_MCP/.venv/bin/python /absolute/path/to/UNIFACE_MCP/DOCUMENTATION/mcp_server/server.py` |
+| **Command** | `/absolute/path/to/UNIFACE_MCP/DOCUMENTATION/.venv/bin/python /absolute/path/to/UNIFACE_MCP/DOCUMENTATION/mcp_server/server.py` |
 
 OpenCode saves the entry to `~/.config/opencode/opencode.jsonc` — you do
 not need to edit that file manually.
@@ -420,9 +432,9 @@ opencode mcp list
 ### Verify the server starts correctly (both tools)
 
 ```bash
-# From UNIFACE_MCP root — should print tool names and exit cleanly
+# From DOCUMENTATION/ — should exit cleanly (server waits for stdio input)
 source .venv/bin/activate
-python3 DOCUMENTATION/mcp_server/server.py --help 2>/dev/null || echo "server loaded OK"
+timeout 2 python mcp_server/server.py 2>/dev/null; echo "server loaded OK"
 ```
 
 ---
@@ -549,14 +561,14 @@ Same cause — `site/assets/index/` is missing. Re-run `build_mcp_data.py`.
 
 ### Server fails to start when wired into Claude Code
 
-Make sure the `command` path points to the **venv Python**, not the system
-Python — the venv Python is the one with `mcp` installed:
+Make sure the `command` path points to the **server venv Python**, not the
+system Python or the root client venv:
 
 ```bash
-# Find the correct path (run from UNIFACE_MCP root)
+# Find the correct path (run from DOCUMENTATION/)
 source .venv/bin/activate
 which python
-# → /home/user/UNIFACE_MCP/.venv/bin/python
+# → /home/user/UNIFACE_MCP/DOCUMENTATION/.venv/bin/python
 ```
 
 Use that full path in the `claude mcp add` command.
